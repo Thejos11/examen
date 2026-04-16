@@ -1,0 +1,32 @@
+[
+    {
+        "codigo": "01",
+        "nombre": "papas",
+        "proveedor": "fritas",
+        "bodegas": {
+            "norte": 0,
+            "centro": 0,
+            "oriente": 0
+        }
+    },
+    {
+        "codigo": "02",
+        "nombre": "pool",
+        "proveedor": "gaseosa",
+        "bodegas": {
+            "norte": 10,
+            "centro": 0,
+            "oriente": 0
+        }
+    },
+    {
+        "codigo": "04",
+        "nombre": "holsas",
+        "proveedor": "hola",
+        "bodegas": {
+            "norte": 0,
+            "centro": 0,
+            "oriente": 9
+        }
+    }
+]
