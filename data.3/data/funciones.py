@@ -189,45 +189,65 @@ def reporte(datos):
                 total = sum(producto["bodegas"].values())
                 f.write(f"{producto['nombre']} - Total: {total}")
 def transferenciaProducto(datos):
-    codigo = input("Código: ")
-    producto = transferenciaProducto(datos, codigo)
-    if not producto:
-        print("No existe")
+    print(" Transferencia entre Bodegas ")
+    codigo = input("Ingrese el código del producto: ")
+
+    if codigo not in inventario:
+        print("Error: El producto no existe.")
         return
 
-    bodega = input("Bodega: ").lower()
+    bodegas_validas = ["Norte", "Centro", "Oriente"]
+    print(f"Bodegas disponibles: {bodegas_validas}")
+    
+    origen = input("Bodega de origen: ").capitalize()
+    destino = input("Bodega de destino: ").capitalize()
 
-    if bodega not in ["norte", "centro", "oriente"]:
-        print("Bodega inválida")
+    if origen not in bodegas_validas or destino not in bodegas_validas:
+        print("Error: Una o ambas bodegas no son válidas.")
+        return
+    if origen == destino:
+        print("Error: La bodega de origen y destino no pueden ser la misma.")
         return
 
-    cantidad = input("Cantidad: ")
-
-    if not cantidad.isdigit():
-        print("Cantidad inválida")
+    try:
+        cantidad = int(input("Cantidad a transferir: "))
+        if cantidad <= 0:
+            print("Error: La cantidad debe ser mayor a cero.")
+            return
+    except ValueError:
+        print("Error: Ingrese un número válido.")
         return
 
-    cantidad = int(cantidad)
-    descripcion = input("Descripción: ")
+    descripcion = input("Descripción de la transferencia: ")
+    stock_origen = inventario[codigo]["bodegas"].get(origen, 0)
+    
+    if stock_origen >= cantidad:
+        id_transferencia = f"TR-{codigo}-{origen[0]}{destino[0]}"
+        inventario[codigo]["bodegas"][origen] -= cantidad
+        inventario[codigo]["bodegas"][destino] = inventario[codigo]["bodegas"].get(destino, 0) + cantidad
 
-    producto["bodegas"][bodega] += cantidad
-    guardarDatos(datos)
+        movimiento_salida = {
+            "id": id_transferencia,
+            "tipo": "Salida por Transferencia",
+            "bodega": origen,
+            "cantidad": cantidad,
+            "descripcion": f"Hacia {destino}: {descripcion}"
+        }
+        movimiento_entrada = {
+            "id": id_transferencia,
+            "tipo": "Entrada por Transferencia",
+            "bodega": destino,
+            "cantidad": cantidad,
+            "descripcion": f"Desde {origen}: {descripcion}"
+        }
 
-    movimiento = {
-        "codigo": codigo,
-        "tipo": "entrada",
-        "bodega": bodega,
-        "cantidad": cantidad,
-        "descripcion": descripcion,
-        "fecha": fecha()
-    }
+        historial[codigo].append(movimiento_salida)
+        historial[codigo].append(movimiento_entrada)
 
-    historial = cargarHistorial()
-    historial.append(movimiento)
-    guardarHistorial(historial)
-
-    print("Ingreso realizado")
-
+        print(f"\n¡Éxito! Transferencia {id_transferencia} completada.")
+        print(f"Stock actual - {origen}: {inventario[codigo]['bodegas'][origen]} | {destino}: {inventario[codigo]['bodegas'][destino]}")
+    else:
+        print(f"Error: Stock insuficiente en {origen}. Disponible: {stock_origen}")
 
     
     
