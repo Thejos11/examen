@@ -1,34 +1,34 @@
 import json
 import os
 from datetime import datetime
+import confi
 
-
-"data/inventario.json"
-"data/historial.json"
-"data/bodega.json"
+confi.ruta_absoluta/"data/inventario.json"
+confi.ruta_absoluta/"data/historial.json"
+confi.ruta_absoluta/"data/bodega.json"
 def cargarDatos():
-    if os.path.exists("data/inventario.json"):
-        with open("data/inventario.json", "r") as f:
+    if os.path.exists(confi.ruta_absoluta/"data/inventario.json"):
+        with open(confi.ruta_absoluta/"data/inventario.json", "r") as f:
             return json.load(f)
-    if os.path.exists("data/bodega.json"):
-            with open("data/bodega.json", "r") as f:
+    if os.path.exists(confi.ruta_absoluta/"data/bodega.json"):
+            with open(confi.ruta_absoluta/"data/bodega.json", "r") as f:
                 return json.load(f)
     return []
 
 def guardarDatos(datos):
-    with open("data/inventario.json", "w") as f:
+    with open(confi.ruta_absoluta/"data/inventario.json", "w") as f:
         json.dump(datos, f, indent=4)
-    with open("data/bodega.json", "w") as f:
+    with open(confi.ruta_absoluta/"data/bodega.json", "w") as f:
         json.dump(datos, f, indent=4)
 
 def cargarHistorial():
-    if os.path.exists("data/historial.json"):
-        with open("data/historial.json", "r") as f:
+    if os.path.exists(confi.ruta_absoluta/"data/historial.json"):
+        with open(confi.ruta_absoluta/"data/historial.json", "r") as f:
             return json.load(f)
     return []
 
 def guardarHistorial(historial):
-    with open("data/historial.json", "w") as f:
+    with open(confi.ruta_absoluta/"data/historial.json", "w") as f:
         json.dump(historial, f, indent=4)
 def buscarProducto(datos, codigo):
     for producto in datos:
@@ -63,7 +63,7 @@ def registrarProducto(datos):
 
 
 def ingresarProducto(datos):
-    codigo = input("Código: ")https://github.com/Thejos11/examen/upload/main
+    codigo = input("Código: ")
     producto = buscarProducto(datos, codigo)
 
     if not producto:
@@ -189,18 +189,20 @@ def reporte(datos):
                 total = sum(producto["bodegas"].values())
                 f.write(f"{producto['nombre']} - Total: {total}")
 def transferenciaProducto(datos):
-    print(" Transferencia entre Bodegas ")
+    print("Transferencia entre Bodegas")
     codigo = input("Ingrese el código del producto: ")
-
-    if codigo not in inventario:
+    
+    producto = buscarProducto(datos, codigo)
+    
+    if not producto:
         print("Error: El producto no existe.")
         return
 
-    bodegas_validas = ["Norte", "Centro", "Oriente"]
+    bodegas_validas = ["norte", "centro", "oriente"]
     print(f"Bodegas disponibles: {bodegas_validas}")
     
-    origen = input("Bodega de origen: ").capitalize()
-    destino = input("Bodega de destino: ").capitalize()
+    origen = input("Bodega de origen: ").lower().strip()
+    destino = input("Bodega de destino: ").lower().strip()
 
     if origen not in bodegas_validas or destino not in bodegas_validas:
         print("Error: Una o ambas bodegas no son válidas.")
@@ -217,37 +219,39 @@ def transferenciaProducto(datos):
     except ValueError:
         print("Error: Ingrese un número válido.")
         return
-
-    descripcion = input("Descripción de la transferencia: ")
-    stock_origen = inventario[codigo]["bodegas"].get(origen, 0)
+    stock_origen = producto["bodegas"].get(origen, 0)
     
     if stock_origen >= cantidad:
-        id_transferencia = f"TR-{codigo}-{origen[0]}{destino[0]}"
-        inventario[codigo]["bodegas"][origen] -= cantidad
-        inventario[codigo]["bodegas"][destino] = inventario[codigo]["bodegas"].get(destino, 0) + cantidad
+        id_transferencia = f"TR-{codigo}-{origen[0].upper()}{destino[0].upper()}"
+        producto["bodegas"][origen] -= cantidad
+        producto["bodegas"][destino] += cantidad
+        guardarDatos(datos)
+        descripcion = input("Descripción de la transferencia: ")
+        lista_historial = cargarHistorial()
 
         movimiento_salida = {
-            "id": id_transferencia,
-            "tipo": "Salida por Transferencia",
+            "id_tr": id_transferencia,
+            "codigo": codigo,
+            "tipo": "salida_transferencia",
             "bodega": origen,
             "cantidad": cantidad,
-            "descripcion": f"Hacia {destino}: {descripcion}"
+            "descripcion": f"Hacia {destino}: {descripcion}",
+            "fecha": fecha()
         }
         movimiento_entrada = {
-            "id": id_transferencia,
-            "tipo": "Entrada por Transferencia",
+            "id_tr": id_transferencia,
+            "codigo": codigo,
+            "tipo": "entrada_transferencia",
             "bodega": destino,
             "cantidad": cantidad,
-            "descripcion": f"Desde {origen}: {descripcion}"
+            "descripcion": f"Desde {origen}: {descripcion}",
+            "fecha": fecha()
         }
-
-        historial[codigo].append(movimiento_salida)
-        historial[codigo].append(movimiento_entrada)
+        lista_historial.append(movimiento_salida)
+        lista_historial.append(movimiento_entrada)
+        guardarHistorial(lista_historial)
 
         print(f"\n¡Éxito! Transferencia {id_transferencia} completada.")
-        print(f"Stock actual - {origen}: {inventario[codigo]['bodegas'][origen]} | {destino}: {inventario[codigo]['bodegas'][destino]}")
+        print(f"Stock actual - {origen}: {producto['bodegas'][origen]} | {destino}: {producto['bodegas'][destino]}")
     else:
         print(f"Error: Stock insuficiente en {origen}. Disponible: {stock_origen}")
-
-    
-    

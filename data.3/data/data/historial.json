@@ -1,0 +1,64 @@
+[
+    {
+        "codigo": "01",
+        "tipo": "entrada",
+        "bodega": "norte",
+        "cantidad": 1,
+        "fecha": "2026-04-16 20:19"
+    },
+    {
+        "id_tr": "TR-01-NO",
+        "codigo": "01",
+        "tipo": "transferencia",
+        "desde": "norte",
+        "hacia": "oriente",
+        "cantidad": 1,
+        "fecha": "2026-04-16 20:20"
+    },
+    {
+        "codigo": "01",
+        "tipo": "entrada",
+        "bodega": "norte",
+        "cantidad": 10,
+        "fecha": "2026-04-16 20:31"
+    },
+    {
+        "id_tr": "TR-01-NC",
+        "codigo": "01",
+        "tipo": "transferencia",
+        "desde": "norte",
+        "hacia": "centro",
+        "cantidad": 10,
+        "fecha": "2026-04-16 20:32"
+    },
+    {
+        "codigo": "03",
+        "tipo": "entrada",
+        "bodega": "centro",
+        "cantidad": 30,
+        "fecha": "2026-04-17 16:33"
+    },
+    {
+        "id_tr": "TR-03-CO",
+        "codigo": "03",
+        "tipo": "transferencia",
+        "detalle": "Movimiento de centro a oriente",
+        "cantidad": 15,
+        "fecha": "2026-04-17 16:41"
+    },
+    {
+        "codigo": "05",
+        "tipo": "entrada",
+        "bodega": "norte",
+        "cantidad": 10,
+        "fecha": "2026-04-17 18:40"
+    },
+    {
+        "id_tr": "TR-05-NO",
+        "codigo": "05",
+        "tipo": "transferencia",
+        "detalle": "Movimiento de norte a oriente",
+        "cantidad": 10,
+        "fecha": "2026-04-17 18:41"
+    }
+]

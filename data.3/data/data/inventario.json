@@ -1,0 +1,29 @@
+[
+    {
+        "codigo": "01",
+        "nombre": "jose",
+        "bodegas": {
+            "norte": 0,
+            "centro": 10,
+            "oriente": 1
+        }
+    },
+    {
+        "codigo": "03",
+        "nombre": "holas",
+        "bodegas": {
+            "norte": 0,
+            "centro": 15,
+            "oriente": 15
+        }
+    },
+    {
+        "codigo": "05",
+        "nombre": "pepe",
+        "bodegas": {
+            "norte": 0,
+            "centro": 0,
+            "oriente": 10
+        }
+    }
+]
